@@ -5,6 +5,8 @@
 #ifndef MLIB_ARRAY_H
 #define MLIB_ARRAY_H
 
+#include <iostream>
+
 #include "mlib_ops.h"
 #include "mlib_core.h"
 
@@ -49,6 +51,13 @@ namespace mlib {
 		inline array operator - (const array<base> &v) const { return array<base>(*this) -= v; }
 		inline array operator * (const array<base> &v) const { return array<base>(*this) *= v; }
 		inline array operator / (const array<base> &v) const { return array<base>(*this) /= v; }
+		
+		friend std::ostream & operator << (std::ostream &out, array<base> &a)
+		{
+			for (int i = 0; i < _size; i++) out << a[i] << " ";
+			return out;
+		}
+
 	};
 }; // mlib
 
