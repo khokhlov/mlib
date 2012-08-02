@@ -16,7 +16,7 @@ TEST_CASE(
 	 )
 {
 	v1_t v;
-	REQUIRE(v.dim() == 1);
+	REQUIRE(v.size() == 1);
 	REQUIRE(v.x == Approx(0));
 	REQUIRE(v.norm() == Approx(0));
 	v1_t v1(5);
