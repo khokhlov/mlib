@@ -14,10 +14,27 @@ namespace mlib {
 	template <class base>
 	struct array : public base {
 		typedef typename base::type T;
-		enum {
-			_size = sizeof(base) / sizeof(T),
-		};
-		array() { zero(); }
+		using base::_size;
+		using base::_cols;
+		using base::_rows;
+
+		array() : base() {}
+		array(const T x) {
+			MLIB_STATIC_CHECK(_size == 1);
+			begin()[0] = x;
+		}
+		array(const T x, const T y) {
+			MLIB_STATIC_CHECK(_size == 2);
+			begin()[0] = x;
+			begin()[1] = y;
+		}
+		array(const T x, const T y, const T z) {
+			MLIB_STATIC_CHECK(_size == 3);
+			begin()[0] = x;
+			begin()[1] = y;
+			begin()[2] = z;
+		}
+
 		array(const array<base> &v) { mlib_ops::copy<_size, T>(begin(), v.begin()); }
 
 		inline int size() const { return _size; }

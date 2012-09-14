@@ -12,13 +12,13 @@ struct _v1 {
 		typedef float type;
 		float x;
 	};
-typedef mlib::basic_vector<_v1> v1_t;
+typedef mlib::array<mlib::basic_vector<_v1> > v1_t;
 
 struct _v2 {
 		typedef float type;
 		float x, y;
 	};
-typedef mlib::basic_vector<_v2> v2_t;
+typedef mlib::array<mlib::basic_vector<_v2> > v2_t;
 
 
 TEST_CASE(

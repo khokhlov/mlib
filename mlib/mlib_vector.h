@@ -10,24 +10,12 @@
 
 namespace mlib {
 	template <class base>
-	struct basic_vector : public array<base> {
-		typedef typename array<base>::type T;
-		basic_vector() : array<base>() {}
-		basic_vector(const T x) {
-			MLIB_STATIC_CHECK(array<base>::_size == 1);
-			array<base>::begin()[0] = x;
-		}
-		basic_vector(const T x, const T y) {
-			MLIB_STATIC_CHECK(array<base>::_size == 2);
-			array<base>::begin()[0] = x;
-			array<base>::begin()[1] = y;
-		}
-		basic_vector(const T x, const T y, const T z) {
-			MLIB_STATIC_CHECK(array<base>::_size == 3);
-			array<base>::begin()[0] = x;
-			array<base>::begin()[1] = y;
-			array<base>::begin()[2] = z;
-		}
+	struct basic_vector : public base {
+		typedef typename base::type T;
+		enum { _size = sizeof(base) / sizeof(T), };
+		enum { _rows = 1, };
+		enum { _cols = _size, };
+		basic_vector() : base() {}
 	};
 }; // mlib
 
