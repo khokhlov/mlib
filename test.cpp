@@ -2,6 +2,7 @@
 
 
 #include "catch.hpp"
+#include "mlib/mlib_matrix.h"
 #include "mlib/mlib_vector.h"
 
 #include <iostream>
@@ -12,14 +13,24 @@ struct _v1 {
 		typedef float type;
 		float x;
 	};
-typedef mlib::array<mlib::basic_vector<_v1> > v1_t;
+typedef mlib::matrix<mlib::basic_vector<_v1> > v1_t;
 
 struct _v2 {
 		typedef float type;
 		float x, y;
 	};
-typedef mlib::array<mlib::basic_vector<_v2> > v2_t;
+struct _v22 {
+		typedef float type;
+		float x, y;
+	};
+typedef mlib::matrix<mlib::basic_vector<_v2> > v2_t;
+typedef mlib::matrix<mlib::basic_vector<_v22> > v22_t;
 
+template <int N>
+struct aN {
+	typedef float type;
+	type a[N];
+};
 
 TEST_CASE(
 		"v1",
@@ -50,6 +61,23 @@ TEST_CASE(
 }
 
 TEST_CASE(
+		"matrix",
+		"transpose"
+	 )
+{
+	mlib::matrix<aN<6>, 2, 3> m1;
+	m1(0,0) = 1.0;
+	m1(0,1) = 2.0;
+	m1(0,2) = 3.0;
+	m1(1,0) = 4.0;
+	m1(1,1) = 5.0;
+	m1(1,2) = 6.0;
+	cout << m1 << endl;
+	cout << m1.tr() << endl;
+}
+
+
+TEST_CASE(
 		"v2",
 		""
 	 )
@@ -70,6 +98,10 @@ TEST_CASE(
 	v1.normalize();
 	v1 += v2;
 	
-	cout << v1 << endl;
-	cout << v1[0] << endl;
+	cout << v1.rows() << endl;
+	cout << v1.tr().rows() << endl;
+	
+	v2_t d = v1 - v2;
+	REQUIRE(d.x == Approx(v1.x - v2.x));
+	REQUIRE(d.y == Approx(v1.y - v2.y));
 }
