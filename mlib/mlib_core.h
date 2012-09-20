@@ -5,11 +5,14 @@
 #ifndef MLIB_CORE_H
 #define MLIB_CORE_H
 
+#include <stdexcept>
+
 namespace mlib {
 	template<bool> struct CompileTimeError;
 	template<> struct CompileTimeError<true> {};
 };
 
 #define MLIB_STATIC_CHECK(expr) (mlib::CompileTimeError<(expr)!=0>())
+#define MLIB_DYNAMIC_CHECK(expr) if(!(expr)) throw std::logic_error(#expr)
 
 #endif //MLIB_CORE_H
