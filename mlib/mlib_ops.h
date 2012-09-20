@@ -80,6 +80,21 @@ namespace mlib_ops {
 	 */
 	template <int size, typename T>
 	inline void div(T *x, const T *y) { for (int i = 0; i < size; i++) x[i] /= y[i]; }
+
+	/*
+	 * Matrix product.
+	 * C = A * B
+	 */
+	template<int m, int n, int k, typename T>
+	inline void mat_prod(const T *A, const T *B, T *C) {
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < k; j++) {
+				T t = 0;
+				for (int l = 0; l < n; l++) t += A[l + i * n] * B[j + k * l];
+				C[i * k + j] = t;
+			}
+		}
+	}
 };
 
 #endif // MLIB_OPS_H

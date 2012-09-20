@@ -109,10 +109,26 @@ TEST_CASE(
 	""
 	)
 {
-	mlib::matrix<aN<3>, 1, 3> v1, v2;
+	mlib::matrix<mlib::matrix_container<float, 3>, 1, 3> v1, v2;
 	v1 << 1, 2, 3;
 	v2 << -1, 3, -2;
 	cout << v1 << endl;
 	cout << v2 << endl;
 	REQUIRE(v1.dot(v2) == Approx(-1));
 }
+
+TEST_CASE(
+	"prod",
+	""
+	)
+{
+	mlib::matrix<mlib::matrix_container<float, 6>, 2, 3> A;
+	A << 1, 2, 3, 4, 5, 6;
+	mlib::matrix<mlib::matrix_container<float, 3>, 3, 1> x;
+	x << 1, 1, 1;
+	mlib::matrix<mlib::matrix_container<float, 2>, 1, 2> b;
+	b = A.prod(x);
+	REQUIRE(b[0] == Approx(6));
+	REQUIRE(b[1] == Approx(15));
+}
+

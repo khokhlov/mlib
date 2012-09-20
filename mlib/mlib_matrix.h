@@ -11,17 +11,23 @@
 #include "mlib_core.h"
 #include "mlib_comma.h"
 
-#define MATRIX_CHECK_SIZE MLIB_STATIC_CHECK(_cols * _rows == nrows1 * ncols1);
+#define MATRIX_CHECK_SIZE MLIB_STATIC_CHECK(_cols * _rows == m1 * n1);
 
 namespace mlib {
-	template <class base, int nrows = base::_rows, int ncols = base::_cols>
+	template <typename T, int size>
+	struct matrix_container {
+		typedef T type;
+		type a[size];
+	};
+
+	template <class base, int m = base::_rows, int n = base::_cols>
 	struct matrix : public base {
-		//TODO: add check (size == nrows * ncols)
+		//TODO: add check (size == m * n)
 		typedef typename base::type T;
 		enum { _size = sizeof(base) / sizeof(T), };
-		enum { _rows = nrows, };
-		enum { _cols = ncols, };
-		enum { _isvector = ((ncols == 1) || (nrows == 1)), };
+		enum { _rows = m, };
+		enum { _cols = n, };
+		enum { _isvector = ((n == 1) || (m == 1)), };
 		
 		matrix() : base() {}
 		matrix(const T x) {
@@ -40,8 +46,8 @@ namespace mlib {
 			begin()[2] = z;
 		}
 
-		template <class base1, int nrows1, int ncols1>
-		matrix(const matrix<base1, nrows1, ncols1> &v) {
+		template <class base1, int m1, int n1>
+		matrix(const matrix<base1, m1, n1> &v) {
 			MATRIX_CHECK_SIZE;
 			mlib_ops::copy<_size, T>(begin(), v.begin());
 		}
@@ -62,36 +68,36 @@ namespace mlib {
 		inline const T &operator()(const int index) const { return * (begin() + index); }
 		inline T &operator[](const int index) { return begin()[index]; }
 
-		inline T &operator()(const int m, const int n) { return * (begin() + m * _cols + n); }
-		inline const T &operator()(const int m, const int n) const { return * (begin() + m * _cols + n); }
+		inline T &operator()(const int i, const int j) { return * (begin() + i * _cols + j); }
+		inline const T &operator()(const int i, const int j) const { return * (begin() + i * _cols + j); }
 
 		inline T normsq() const { return mlib_ops::normsq<_size, T>(begin()); }
 		inline T norm() const { return mlib_ops::norm<_size, T>(begin()); }
 		inline matrix & normalize() { return *this /= norm(); }
 
-		template <class base1, int nrows1, int ncols1>
-		inline matrix & operator = (const matrix<base1, nrows1, ncols1> &v) {
+		template <class base1, int m1, int n1>
+		inline matrix & operator = (const matrix<base1, m1, n1> &v) {
 			MATRIX_CHECK_SIZE;
 			mlib_ops::copy<_size, T>(begin(), v.begin()); return *this;
 		}
 
-		template <class base1, int nrows1, int ncols1>
-		inline matrix & operator += (const matrix<base1, nrows1, ncols1> &v) {
+		template <class base1, int m1, int n1>
+		inline matrix & operator += (const matrix<base1, m1, n1> &v) {
 			MATRIX_CHECK_SIZE;
 			mlib_ops::add<_size, T>(begin(), v.begin()); return *this;
 		}
-		template <class base1, int nrows1, int ncols1>
-		inline matrix & operator -= (const matrix<base1, nrows1, ncols1> &v) {
+		template <class base1, int m1, int n1>
+		inline matrix & operator -= (const matrix<base1, m1, n1> &v) {
 			MATRIX_CHECK_SIZE;
 			mlib_ops::sub<_size, T>(begin(), v.begin()); return *this;
 		}
-		template <class base1, int nrows1, int ncols1>
-		inline matrix & operator *= (const matrix<base1, nrows1, ncols1> &v) {
+		template <class base1, int m1, int n1>
+		inline matrix & operator *= (const matrix<base1, m1, n1> &v) {
 			MATRIX_CHECK_SIZE;
 			mlib_ops::mul<_size, T>(begin(), v.begin()); return *this;
 		}
-		template <class base1, int nrows1, int ncols1>
-		inline matrix & operator /= (const matrix<base1, nrows1, ncols1> &v) {
+		template <class base1, int m1, int n1>
+		inline matrix & operator /= (const matrix<base1, m1, n1> &v) {
 			MATRIX_CHECK_SIZE;
 			mlib_ops::div<_size, T>(begin(), v.begin()); return *this;
 		}
@@ -99,28 +105,28 @@ namespace mlib {
 		inline matrix & operator *= (const T a) { mlib_ops::scale<_size, T>(begin(), a); return *this; }
 		inline matrix & operator /= (const T a) { mlib_ops::iscale<_size, T>(begin(), a); return *this; }
 
-		template <class base1, int nrows1, int ncols1>
-		inline matrix operator + (const matrix<base1, nrows1, ncols1> &v) const {
+		template <class base1, int m1, int n1>
+		inline matrix operator + (const matrix<base1, m1, n1> &v) const {
 			MATRIX_CHECK_SIZE;
-			return matrix<base, nrows, ncols>(*this) += v;
+			return matrix<base, m, n>(*this) += v;
 		}
-		template <class base1, int nrows1, int ncols1>
-		inline matrix operator - (const matrix<base1, nrows1, ncols1> &v) const {
+		template <class base1, int m1, int n1>
+		inline matrix operator - (const matrix<base1, m1, n1> &v) const {
 			MATRIX_CHECK_SIZE;
-			return matrix<base, nrows, ncols>(*this) -= v;
+			return matrix<base, m, n>(*this) -= v;
 		}
-		template <class base1, int nrows1, int ncols1>
-		inline matrix operator * (const matrix<base1, nrows1, ncols1> &v) const {
+		template <class base1, int m1, int n1>
+		inline matrix operator * (const matrix<base1, m1, n1> &v) const {
 			MATRIX_CHECK_SIZE;
-			return matrix<base, nrows, ncols>(*this) *= v;
+			return matrix<base, m, n>(*this) *= v;
 		}
-		template <class base1, int nrows1, int ncols1>
-		inline matrix operator / (const matrix<base1, nrows1, ncols1> &v) const {
+		template <class base1, int m1, int n1>
+		inline matrix operator / (const matrix<base1, m1, n1> &v) const {
 			MATRIX_CHECK_SIZE;
-			return matrix<base, nrows, ncols>(*this) /= v;
+			return matrix<base, m, n>(*this) /= v;
 		}
 		
-		friend std::ostream & operator << (std::ostream &out, const matrix<base, nrows, ncols> &a) {
+		friend std::ostream & operator << (std::ostream &out, const matrix<base, m, n> &a) {
 			for (int i = 0; i < _rows; i++) {
 				for (int j = 0; j < _cols; j++) {
 					out << a(i, j) << " ";
@@ -133,8 +139,8 @@ namespace mlib {
 		/*
 		 * Transpose matrix.
 		 */
-		inline matrix<base, ncols, nrows> tr() {
-			matrix<base, ncols, nrows> a;
+		inline matrix<base, n, m> tr() {
+			matrix<base, n, m> a;
 			for (int i = 0; i < _rows; i++) {
 				for (int j = 0; j < _cols; j++) {
 					a(j, i) = (*this)(i, j);
@@ -146,11 +152,11 @@ namespace mlib {
 		/*
 		 * Dot product.
 		 */
-		template <class base1, int nrows1, int ncols1>
-		inline T dot(const matrix<base1, nrows1, ncols1> &v) {
+		template <class base1, int m1, int n1>
+		inline T dot(const matrix<base1, m1, n1> &v) {
 			MATRIX_CHECK_SIZE;
 			MLIB_STATIC_CHECK(_isvector);
-			MLIB_STATIC_CHECK((matrix<base1, nrows1, ncols1>::_isvector));
+			MLIB_STATIC_CHECK((matrix<base1, m1, n1>::_isvector));
 			return mlib_ops::dot<_size, T>(begin(), v.begin());
 		}
 		
@@ -162,6 +168,17 @@ namespace mlib {
 		template<class V>
 		inline comma_insert<matrix> operator << (V const &value) {
 			return comma_insert<matrix>(*this, value);
+		}
+
+		/*
+		 * Matrix product.
+		 */
+		template <class base1, int m1, int n1>
+		inline matrix<matrix_container<T, m * n1>, m, n1> prod(const matrix<base1, m1, n1> &v) {
+			MLIB_STATIC_CHECK(n == m1);
+			matrix<matrix_container<T, m * n1>, m, n1> mat;
+			mlib_ops::mat_prod<m, n, n1>(begin(), v.begin(), mat.begin());
+			return mat;
 		}
 	};
 }; // mlib
