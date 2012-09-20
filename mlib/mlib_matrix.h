@@ -15,6 +15,7 @@
 namespace mlib {
 	template <class base, int nrows = base::_rows, int ncols = base::_cols>
 	struct matrix : public base {
+		//TODO: add check (size == nrows * ncols)
 		typedef typename base::type T;
 		enum { _size = sizeof(base) / sizeof(T), };
 		enum { _rows = nrows, };
@@ -116,7 +117,7 @@ namespace mlib {
 			return matrix<base, nrows, ncols>(*this) /= v;
 		}
 		
-		friend std::ostream & operator << (std::ostream &out, matrix<base, nrows, ncols> a) {
+		friend std::ostream & operator << (std::ostream &out, const matrix<base, nrows, ncols> &a) {
 			for (int i = 0; i < _rows; i++) {
 				for (int j = 0; j < _cols; j++) {
 					out << a(i, j) << " ";
