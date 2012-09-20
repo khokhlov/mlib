@@ -7,6 +7,16 @@
 
 #include <cmath>
 
+#include "mlib_core.h"
+
+#ifdef USE_LAPACK
+extern "C" {
+extern void sgeev_(char* jobvl, char* jobvr, int* n, float* a,
+                  int* lda, float* wr, float* wi, float* vl, int* ldvl,
+                  float* vr, int* ldvr, float* work, int* lwork, int* info);
+};
+#endif
+
 namespace mlib_ops {
 	/*
 	 * x = y.
@@ -94,6 +104,31 @@ namespace mlib_ops {
 				C[i * k + j] = t;
 			}
 		}
+	}
+	
+	/*
+	 * Eigenproblem.
+	 */
+	template <int N>
+	inline void eigenproblem(float *A, float *wr, float *wi, float *vl, float *vr) {
+#ifdef USE_LAPACK
+		int n = N, lda = N, ldvl = N, ldvr = N, info, lwork;
+		float *work;
+		float wkopt;
+		char V = 'V';
+		/* Query and allocate the optimal workspace */
+		lwork = -1;
+		sgeev_(&V, &V, &n, A, &lda, wr, wi, vl, &ldvl, vr, &ldvr, &wkopt, &lwork, &info);
+		lwork = (int)wkopt;
+		work = new float[lwork];
+		/* Solve eigenproblem */
+		sgeev_(&V, &V, &n, A, &lda, wr, wi, vl, &ldvl, vr, &ldvr, work, &lwork, &info);
+		delete [] work;
+		/* Check */
+		MLIB_DYNAMIC_CHECK(info <= 0 && "Eigenproblem failed.");
+#else
+		MLIB_DYNAMIC_CHECK(false && "Compile with flag -DUSE_LAPACK");
+#endif
 	}
 };
 

@@ -28,6 +28,7 @@ namespace mlib {
 		enum { _rows = m, };
 		enum { _cols = n, };
 		enum { _isvector = ((n == 1) || (m == 1)), };
+		enum { _issq = (m == n), };
 		
 		matrix() : base() {}
 		matrix(const T x) {
@@ -179,6 +180,68 @@ namespace mlib {
 			matrix<matrix_container<T, m * n1>, m, n1> mat;
 			mlib_ops::mat_prod<m, n, n1>(begin(), v.begin(), mat.begin());
 			return mat;
+		}
+		
+		inline matrix LU() {
+			MLIB_STATIC_CHECK(_issq);
+			matrix lu;
+			for (int i = 0; i < n; i++) lu(0, i) = (*this)(0, i);
+			for (int i = 1; i < n; i++) lu(i, 0) = (*this)(i, 0) / lu(0, 0);
+			for (int i = 1; i < n; i++) {
+				for (int j = i; j < n; j++) {
+					T t = 0;
+					for (int k = 0; k < i; k++) t += lu(i, k) * lu(k, j);
+					lu(i, j) = (*this)(i, j) - t;
+				}
+				for (int j = i + 1; j < n; j++) {
+					T t = 0;
+					for (int k = 0; k < i; k++) t += lu(j, k) * lu(k, i);
+					lu(j, i) = ((*this)(j, i) - t) / lu(i, i);
+				}
+			}
+			return lu;
+		}
+		
+		inline matrix L() {
+			MLIB_STATIC_CHECK(_issq);
+			matrix l;
+			for (int i = 0; i < m; i++) {
+				for (int j = 0; j < i + 1; j++) {
+					l(i, j) = (*this)(i, j);
+					if (i != j) l(j, i) = 0.0;
+				}
+			}
+			return l;
+		}
+		inline matrix U() {
+			MLIB_STATIC_CHECK(_issq);
+			matrix u;
+			for (int i = 0; i < m; i++) {
+				for (int j = i; j < n; j++) {
+					u(i, j) = (*this)(i, j);
+					if (i != j) u(j, i) = 0.0;
+				}
+			}
+			return u;
+		}
+
+		/*
+		 * Determinant.
+		 */
+		inline T det() {
+			MLIB_STATIC_CHECK(_issq);
+			matrix lu = LU();
+			T t = 0;
+			for (int i = 0; i < n; i++) t *= lu(i, i);
+			return t;
+		}
+		
+		/*
+		 * Eigenproblem.
+		 */
+		inline void eigenproblem(T *wr, T *wi, T *vl, T * vr) {
+			MLIB_STATIC_CHECK(_issq);
+			mlib_ops::eigenproblem<n>(begin(), wr, wi, vl, vr);
 		}
 	};
 }; // mlib

@@ -132,3 +132,45 @@ TEST_CASE(
 	REQUIRE(b[1] == Approx(15));
 }
 
+TEST_CASE(
+	"LU",
+	""
+	)
+{
+	mlib::matrix<mlib::matrix_container<float, 9>, 3, 3> A, LU, L, U;
+	A << 3, 6, -9,
+	     2, 5, -3,
+	     -4, 1, 10;
+	LU = A.LU();
+	L = LU.L();
+	L(0, 0) = L(1, 1) = L(2, 2) = 1.0;
+	U = LU.U();
+	REQUIRE((L.prod(U) - A).norm() == Approx(0));
+}
+
+TEST_CASE(
+	"det",
+	""
+	)
+{
+	mlib::matrix<mlib::matrix_container<float, 9>, 3, 3> A;
+	A << -2, 2, 3,
+	     -1, 1, 3,
+	     2, 0, -1;
+	cout << A.LU() << endl;
+	//REQUIRE(A.det() == Approx(6));
+}
+
+TEST_CASE(
+	"eigenproblem",
+	""
+	)
+{
+	mlib::matrix<mlib::matrix_container<float, 4>, 2, 2> A, R, L;
+	mlib::matrix<mlib::matrix_container<float, 2>, 2, 1> wr, wi;
+	A << 0, 1e-3,
+	     3e3*3e3*1e3, 0;
+	A.eigenproblem(wr.begin(), wi.begin(), R.begin(), L.begin());
+	REQUIRE(wr[0] == Approx(3e3));
+	REQUIRE(wr[1] == Approx(-3e3));
+}
