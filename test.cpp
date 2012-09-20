@@ -67,13 +67,9 @@ TEST_CASE(
 	 )
 {
 	mlib::matrix<aN<6>, 2, 3> m1;
-	m1(0,0) = 1.0;
-	m1(0,1) = 2.0;
-	m1(0,2) = 3.0;
-	m1(1,0) = 4.0;
-	m1(1,1) = 5.0;
-	m1(1,2) = 6.0;
-	cout << m1 + m1 << endl;
+	m1 << 1, 2, 3,
+		4, 5, 6;
+	cout << m1 << endl;
 	cout << m1.tr() << endl;
 	cout << m1.isvector() << endl;
 }

@@ -62,8 +62,8 @@ namespace mlib {
 		inline const T &operator()(const int index) const { return * (begin() + index); }
 		inline T &operator[](const int index) { return begin()[index]; }
 
-		inline T &operator()(const int m, const int n) { return * (begin() + n * _rows + m); }
-		inline const T &operator()(const int m, const int n) const { return * (begin() + n * _rows + m); }
+		inline T &operator()(const int m, const int n) { return * (begin() + m * _cols + n); }
+		inline const T &operator()(const int m, const int n) const { return * (begin() + m * _cols + n); }
 
 		inline T normsq() const { return mlib_ops::normsq<_size, T>(begin()); }
 		inline T norm() const { return mlib_ops::norm<_size, T>(begin()); }
