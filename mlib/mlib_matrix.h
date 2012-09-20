@@ -9,6 +9,7 @@
 
 #include "mlib_ops.h"
 #include "mlib_core.h"
+#include "mlib_comma.h"
 
 #define MATRIX_CHECK_SIZE MLIB_STATIC_CHECK(_cols * _rows == nrows1 * ncols1);
 
@@ -20,6 +21,7 @@ namespace mlib {
 		enum { _size = sizeof(base) / sizeof(T), };
 		enum { _rows = nrows, };
 		enum { _cols = ncols, };
+		enum { _isvector = ((ncols == 1) || (nrows == 1)), };
 		
 		matrix() : base() {}
 		matrix(const T x) {
@@ -47,6 +49,7 @@ namespace mlib {
 		inline int size() const { return _size; }
 		inline int rows() const { return _rows; }
 		inline int cols() const { return _cols; }
+		inline int isvector() const { return _isvector; }
 
 		inline T *begin() { return (T*)this; }
 		inline T *end() { return begin() + size(); }
@@ -126,6 +129,7 @@ namespace mlib {
 			}
 			return out;
 		}
+
 		/*
 		 * Transpose matrix.
 		 */
@@ -139,6 +143,26 @@ namespace mlib {
 			return a;
 		}
 
+		/*
+		 * Dot product.
+		 */
+		template <class base1, int nrows1, int ncols1>
+		inline T dot(const matrix<base1, nrows1, ncols1> &v) {
+			MATRIX_CHECK_SIZE;
+			MLIB_STATIC_CHECK(_isvector);
+			MLIB_STATIC_CHECK((matrix<base1, nrows1, ncols1>::_isvector));
+			return mlib_ops::dot<_size, T>(begin(), v.begin());
+		}
+		
+		/*
+		 * Comma-initializer operator.
+		 * matrix m;
+		 * m << 1, 2, 3;
+		 */
+		template<class V>
+		inline comma_insert<matrix> operator << (V const &value) {
+			return comma_insert<matrix>(*this, value);
+		}
 	};
 }; // mlib
 
