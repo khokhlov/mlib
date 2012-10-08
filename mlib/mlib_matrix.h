@@ -46,6 +46,11 @@ namespace mlib {
 			begin()[1] = y;
 			begin()[2] = z;
 		}
+		matrix(const cart_dir &ind) {
+			MLIB_DYNAMIC_CHECK(_size > ind);
+			zero();
+			begin()[ind] = 1.0;
+		}
 
 		template <class base1, int m1, int n1>
 		matrix(const matrix<base1, m1, n1> &v) {
@@ -53,10 +58,10 @@ namespace mlib {
 			mlib_ops::copy<_size, T>(begin(), v.begin());
 		}
 
-		inline int size() const { return _size; }
-		inline int rows() const { return _rows; }
-		inline int cols() const { return _cols; }
-		inline int isvector() const { return _isvector; }
+		inline static int size() { return _size; }
+		inline static int rows() { return _rows; }
+		inline static int cols() { return _cols; }
+		inline static int isvector() { return _isvector; }
 
 		inline T *begin() { return (T*)this; }
 		inline T *end() { return begin() + size(); }
@@ -64,6 +69,7 @@ namespace mlib {
 		inline const T *end() const { return begin() + size(); }
 
 		inline matrix &zero() { mlib_ops::zero<_size, T>(begin()); return *this; }
+		inline matrix &null() { return zero(); }
 
 		inline T &operator()(const int index) { return * (begin() + index); }
 		inline const T &operator()(const int index) const { return * (begin() + index); }

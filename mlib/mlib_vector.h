@@ -14,13 +14,6 @@
 #define mlib_vector4(T) mlib::matrix<mlib::basic_vector<mlib::vector4_t<T> > >
 
 namespace mlib {
-	enum cart_dir {
-		X = 0,
-		Y,
-		Z,
-		All_DIRS
-	};
-
 	template <class base>
 	struct basic_vector : public base {
 		typedef typename base::type T;
