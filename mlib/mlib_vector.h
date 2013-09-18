@@ -12,6 +12,11 @@
 #define mlib_vector2(T) mlib::matrix<mlib::basic_vector<mlib::vector2_t<T> > >
 #define mlib_vector3(T) mlib::matrix<mlib::basic_vector<mlib::vector3_t<T> > >
 #define mlib_vector4(T) mlib::matrix<mlib::basic_vector<mlib::vector4_t<T> > >
+#define mlib_vector5(T) mlib::matrix<mlib::basic_vector<mlib::vector5_t<T> > >
+#define mlib_vector6(T) mlib::matrix<mlib::basic_vector<mlib::vector6_t<T> > >
+#define mlib_vector7(T) mlib::matrix<mlib::basic_vector<mlib::vector7_t<T> > >
+#define mlib_vector8(T) mlib::matrix<mlib::basic_vector<mlib::vector8_t<T> > >
+#define mlib_vector9(T) mlib::matrix<mlib::basic_vector<mlib::vector9_t<T> > >
 
 namespace mlib {
 	template <class base>
@@ -42,6 +47,31 @@ namespace mlib {
 	struct vector4_t {
 		typedef T type;
 		type x, y, z, w;
+	};
+	template <class T>
+	struct vector5_t {
+		typedef T type;
+		type x1, x2, x3, x4, x5;
+	};
+	template <class T>
+	struct vector6_t {
+		typedef T type;
+		type x1, x2, x3, x4, x5, x6;
+	};
+	template <class T>
+	struct vector7_t {
+		typedef T type;
+		type x1, x2, x3, x4, x5, x6, x7;
+	};
+	template <class T>
+	struct vector8_t {
+		typedef T type;
+		type x1, x2, x3, x4, x5, x6, x7, x8;
+	};
+	template <class T>
+	struct vector9_t {
+		typedef T type;
+		type x1, x2, x3, x4, x5, x6, x7, x8, x9;
 	};
 }; // mlib
 
