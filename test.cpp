@@ -161,6 +161,7 @@ TEST_CASE(
 	//REQUIRE(A.det() == Approx(6));
 }
 
+#ifdef USE_LAPACK
 TEST_CASE(
 	"eigenproblem",
 	""
@@ -174,3 +175,4 @@ TEST_CASE(
 	REQUIRE(wr[0] == Approx(3e3));
 	REQUIRE(wr[1] == Approx(-3e3));
 }
+#endif
