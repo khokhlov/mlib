@@ -14,6 +14,11 @@ extern "C" {
 extern void sgeev_(char* jobvl, char* jobvr, int* n, float* a,
                   int* lda, float* wr, float* wi, float* vl, int* ldvl,
                   float* vr, int* ldvr, float* work, int* lwork, int* info);
+extern void dgeev_(char* jobvl, char* jobvr, int* n, double* a,
+                  int* lda, double* wr, double* wi, double* vl, int* ldvl,
+                  double* vr, int* ldvr, double* work, int* lwork, int* info);
+extern void dgetrf_(int* M, int *N, double* A, int* lda, int* IPIV, int* INFO);
+extern void dgetri_(int* N, double* A, int* lda, int* IPIV, double* WORK, int* lwork, int* INFO);
 };
 #endif
 
@@ -126,6 +131,46 @@ namespace mlib_ops {
 		delete [] work;
 		/* Check */
 		MLIB_DYNAMIC_CHECK(info <= 0 && "Eigenproblem failed.");
+#else
+		MLIB_DYNAMIC_CHECK(false && "Compile with flag -DUSE_LAPACK");
+#endif
+	}
+
+	template <int N>
+	inline void eigenproblem(double *A, double *wr, double *wi, double *vl, double *vr) {
+#ifdef USE_LAPACK
+		int n = N, lda = N, ldvl = N, ldvr = N, info, lwork;
+		double *work;
+		double wkopt;
+		char V = 'V';
+		/* Query and allocate the optimal workspace */
+		lwork = -1;
+		dgeev_(&V, &V, &n, A, &lda, wr, wi, vl, &ldvl, vr, &ldvr, &wkopt, &lwork, &info);
+		lwork = (int)wkopt;
+		work = new double[lwork];
+		/* Solve eigenproblem */
+		dgeev_(&V, &V, &n, A, &lda, wr, wi, vl, &ldvl, vr, &ldvr, work, &lwork, &info);
+		delete [] work;
+		/* Check */
+		MLIB_DYNAMIC_CHECK(info <= 0 && "Eigenproblem failed.");
+#else
+		MLIB_DYNAMIC_CHECK(false && "Compile with flag -DUSE_LAPACK");
+#endif
+	}
+
+	template <int N>
+	inline void inverse(double *A) {
+#ifdef USE_LAPACK
+		int n = N, info, lwork = N * N;
+		int *ipiv = new int[N + 1];
+		double *work;
+		work = new double[lwork];
+		dgetrf_(&n, &n, A, &n, ipiv, &info);
+		dgetri_(&n, A, &n, ipiv, work, &lwork, &info);
+		delete [] work;
+		delete [] ipiv;
+		/* Check */
+		MLIB_DYNAMIC_CHECK(info <= 0 && "Inverse failed.");
 #else
 		MLIB_DYNAMIC_CHECK(false && "Compile with flag -DUSE_LAPACK");
 #endif

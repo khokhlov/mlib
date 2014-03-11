@@ -245,9 +245,17 @@ namespace mlib {
 		/*
 		 * Eigenproblem.
 		 */
-		inline void eigenproblem(T *wr, T *wi, T *vl, T * vr) {
+		inline void eigenproblem(T *wr, T *wi, T *vl, T *vr) {
 			MLIB_STATIC_CHECK(_issq);
 			mlib_ops::eigenproblem<n>(begin(), wr, wi, vl, vr);
+		}
+
+		/*
+		 * Inverse.
+		 */
+		inline void inv() {
+			MLIB_STATIC_CHECK(_issq);
+			mlib_ops::inverse<n>(begin());
 		}
 	};
 }; // mlib
