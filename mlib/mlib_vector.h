@@ -1,5 +1,5 @@
 /*
- * Author: Nikolay Khokhlov <k_h@inbox.ru>, (C) 2012
+ * Author: Nikolay Khokhlov <k_h@inbox.ru>, (C) 2012, 2015
  */
 
 #ifndef MLIB_VECTOR_H
@@ -31,22 +31,22 @@ namespace mlib {
 	template <class T>
 	struct vector1_t {
 		typedef T type;
-		type x;
+		type x1;
 	};
 	template <class T>
 	struct vector2_t {
 		typedef T type;
-		type x, y;
+		type x1, x2;
 	};
 	template <class T>
 	struct vector3_t {
 		typedef T type;
-		type x, y, z;
+		type x1, x2, x3;
 	};
 	template <class T>
 	struct vector4_t {
 		typedef T type;
-		type x, y, z, w;
+		type x1, x2, x3, x4;
 	};
 	template <class T>
 	struct vector5_t {

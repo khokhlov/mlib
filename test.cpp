@@ -11,17 +11,17 @@ using namespace std;
 
 struct _v1 {
 		typedef float type;
-		float x;
+		float x1;
 	};
 typedef mlib::matrix<mlib::basic_vector<_v1> > v1_t;
 
 struct _v2 {
 		typedef float type;
-		float x, y;
+		float x1, y1;
 	};
 struct _v22 {
 		typedef float type;
-		float x, y;
+		float x1, y1;
 	};
 typedef mlib::matrix<mlib::basic_vector<_v2> > v2_t;
 typedef mlib::matrix<mlib::basic_vector<_v22> > v22_t;
@@ -39,26 +39,25 @@ TEST_CASE(
 {
 	v1_t v;
 	REQUIRE(v.size() == 1);
-	REQUIRE(v.x == Approx(0));
+	REQUIRE(v.x() == Approx(0));
 	REQUIRE(v.norm() == Approx(0));
 	v1_t v1(5);
-	REQUIRE(v1.x == Approx(5));
+	REQUIRE(v1.x() == Approx(5));
 	v1_t v2(v1);
-	REQUIRE(v1.x == Approx(v2.x));
+	REQUIRE(v1.x() == Approx(v2.x()));
 	REQUIRE(v1(0) == Approx(v2(0)));
 	REQUIRE(v1[0] == Approx(v2[0]));
 	REQUIRE(v1.norm() == Approx(5));
 	v1 *= 5;
-	REQUIRE(v1.x == Approx(25));
+	REQUIRE(v1.x() == Approx(25));
 	v1.normalize();
-	REQUIRE(v1.x == Approx(1.0));
+	REQUIRE(v1.x() == Approx(1.0));
 	v1 += v1;
-	REQUIRE(v1.x == Approx(2.0));
-	
-	cout << endl;
-	cout << v1 << endl;
-	cout << v1[0] << endl;
-	cout << v1.isvector() << endl;
+	REQUIRE(v1.x() == Approx(2.0));
+	REQUIRE(v1.isvector());
+	v1.x() = 5.0;
+	REQUIRE(v1.x() == Approx(5.0));
+	REQUIRE(v1.i() == Approx(5.0));
 }
 
 TEST_CASE(
@@ -82,17 +81,17 @@ TEST_CASE(
 {
 	v2_t v;
 	REQUIRE(v.size() == 2);
-	REQUIRE(v.x == Approx(0));
+	REQUIRE(v.x() == Approx(0));
 	REQUIRE(v.norm() == Approx(0));
 	v2_t v1(3, 4);
-	REQUIRE(v1.x == Approx(3));
+	REQUIRE(v1.x() == Approx(3));
 	v2_t v2(v1);
-	REQUIRE(v1.x == Approx(v2.x));
+	REQUIRE(v1.x() == Approx(v2.x()));
 	REQUIRE(v1(0) == Approx(v2(0)));
 	REQUIRE(v1[0] == Approx(v2[0]));
 	REQUIRE(v1.norm() == Approx(5));
 	v1 *= 5;
-	REQUIRE(v1.x == Approx(15));
+	REQUIRE(v1.x() == Approx(15));
 	v1.normalize();
 	v1 += v2;
 	
@@ -100,8 +99,8 @@ TEST_CASE(
 	cout << v1.tr().rows() << endl;
 	
 	v2_t d = v1 - v2;
-	REQUIRE(d.x == Approx(v1.x - v2.x));
-	REQUIRE(d.y == Approx(v1.y - v2.y));
+	REQUIRE(d.x() == Approx(v1.x1 - v2.x1));
+	REQUIRE(d.y() == Approx(v1.y1 - v2.y1));
 }
 
 TEST_CASE(

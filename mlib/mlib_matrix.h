@@ -1,5 +1,5 @@
 /*
- * Author: Nikolay Khokhlov <k_h@inbox.ru>, (C) 2012
+ * Author: Nikolay Khokhlov <k_h@inbox.ru>, (C) 2012, 2015
  */
 
 #ifndef MLIB_ARRAY_H
@@ -67,6 +67,13 @@ namespace mlib {
 		inline T *end() { return begin() + size(); }
 		inline const T *begin() const { return (T*)this; }
 		inline const T *end() const { return begin() + size(); }
+
+		inline T &x() { return begin()[0]; }
+		inline T &y() { return begin()[1]; }
+		inline T &z() { return begin()[2]; }
+		inline T &i() { return begin()[0]; }
+		inline T &j() { return begin()[1]; }
+		inline T &k() { return begin()[2]; }
 
 		inline matrix &zero() { mlib_ops::zero<_size, T>(begin()); return *this; }
 		inline matrix &null() { return zero(); }
