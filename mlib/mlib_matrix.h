@@ -151,6 +151,28 @@ namespace mlib {
 		}
 
 		/*
+		 * Component-wise max.
+		 */
+		template <class base1, int m1, int n1>
+		inline matrix<base, n, m> max(const matrix<base1, m1, n1> &v) const {
+			MATRIX_CHECK_SIZE;
+			matrix<base, n, m> a;
+			mlib_ops::max<_size, T>(a.begin(), begin(), v.begin());
+			return a;
+		}
+		/*
+		 * Component-wise min.
+		 */
+		template <class base1, int m1, int n1>
+		inline matrix<base, n, m> min(const matrix<base1, m1, n1> &v) const {
+			MATRIX_CHECK_SIZE;
+			matrix<base, n, m> a;
+			mlib_ops::min<_size, T>(a.begin(), begin(), v.begin());
+			return a;
+		}
+
+
+		/*
 		 * Transpose matrix.
 		 */
 		inline matrix<base, n, m> tr() {
@@ -265,6 +287,11 @@ namespace mlib {
 			mlib_ops::inverse<n>(begin());
 		}
 	};
+
+	template <class base1, class base2, int m1, int n1, int m2, int n2>
+	inline matrix<base1, n1, m1> max(const matrix<base1, m1, n1> &a, const matrix<base2, m2, n2> &b) { return a.max(b); }
+	template <class base1, class base2, int m1, int n1, int m2, int n2>
+	inline matrix<base1, n1, m1> min(const matrix<base1, m1, n1> &a, const matrix<base2, m2, n2> &b) { return a.min(b); }
 }; // mlib
 
 #endif // MLIB_ARRAY_H

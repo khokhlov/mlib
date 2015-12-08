@@ -61,6 +61,31 @@ TEST_CASE(
 }
 
 TEST_CASE(
+	"vector",
+	"min/max"
+)
+{
+	mlib_vector2(int) a, b, c;
+	a.x() = 1;
+	a.y() = -1;
+	b.x() = -2;
+	b.y() = 3;
+	c = a.max(b);
+	REQUIRE(c.x() == 1);
+	REQUIRE(c.y() == 3);
+	c = a.min(b);
+	REQUIRE(c.x() == -2);
+	REQUIRE(c.y() == -1);
+
+	c = mlib::max(a, b);
+	REQUIRE(c.x() == 1);
+	REQUIRE(c.y() == 3);
+	c = mlib::min(a, b);
+	REQUIRE(c.x() == -2);
+	REQUIRE(c.y() == -1);
+}
+
+TEST_CASE(
 		"matrix",
 		"transpose"
 	 )

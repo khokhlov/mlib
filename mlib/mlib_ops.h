@@ -97,6 +97,18 @@ namespace mlib_ops {
 	inline void div(T *x, const T *y) { for (int i = 0; i < size; i++) x[i] /= y[i]; }
 
 	/*
+	 * x = max(a, b).
+	 */
+	template <int size, typename T>
+	inline void max(T *x, const T *a, const T *b) { for (int i = 0; i < size; i++) x[i] = std::max(a[i], b[i]); }
+
+	/*
+	 * x = min(a, b).
+	 */
+	template <int size, typename T>
+	inline void min(T *x, const T *a, const T *b) { for (int i = 0; i < size; i++) x[i] = std::min(a[i], b[i]); }
+
+	/*
 	 * Matrix product.
 	 * C = A * B
 	 */
